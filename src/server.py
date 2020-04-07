@@ -1,17 +1,15 @@
 from socket import *
-from MainWindow import MainWindow
-from PyQt5 import QApplication
 
 class ServerSocket(object):
-    def __init__(self, IP, PORT):
-        self.IP = IP
-        self.PORT = PORT
+    def __init__(self):
+        self.IP = ""
+        self.PORT = ""
         self.fd = -1
+        self.CreateSocket()
 
     def CreateSocket(self):
         self.fd = socket(AF_INET, SOCK_STREAM, 0)
         self.fd.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        return self.fd
 
     def BindAddr(self):
         ADDR = (self.IP, self.PORT)
@@ -23,23 +21,3 @@ class ServerSocket(object):
     def AcceptConnection(self):
         (client_fd, client_addr) = self.fd.accept()
         return (client_fd, client_addr)
-
-    
-
-
-    
-
-
-
-
-
-
-
-app = QApplication([])
-
-window = MainWindow()
-window.InitUI()
-
-
-
-sys.exit(app.exec_())
