@@ -4,8 +4,7 @@ from PyQt5.QtCore import *
 import sys
 import time
 
-SERVER_PORT = 15555
-SERVER_IP = ""
+
 
 
 
