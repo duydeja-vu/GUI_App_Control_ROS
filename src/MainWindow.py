@@ -26,14 +26,15 @@ class MainWindow(QMainWindow):
         # self.text_box.resize(200, 50)
         self.button = QPushButton("ENTER for Start Server", self)
         self.button.resize(250, 50)
-        self.button.move(140, 150)
+        self.button.move(140, 130)
         self.button.clicked.connect(self.StartServer)
         self.show()
 
     def StartServer(self):
         error_message = QLabel(self)
-        error_message.setText("Server Listening")
-        error_message.move(200, 250)
+        error_message.resize(250, 50)
+        error_message.setText("Server Waiting Client...")
+        error_message.move(200, 180)
         error_message.show()
         listen_process = Process(target=self.SocketHandle)
         listen_process.start()
