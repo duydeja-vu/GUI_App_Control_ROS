@@ -21,3 +21,6 @@ class ServerSocket(object):
     def AcceptConnection(self):
         (client_fd, client_addr) = self.fd.accept()
         return (client_fd, client_addr)
+
+    def CloseSocket(self):
+        self.fd.close()
