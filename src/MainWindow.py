@@ -36,9 +36,20 @@ class MainWindow(QMainWindow):
             exit(-1)
         server_socket.IP = self.text_box.text()
         server_socket.PORT = PORT
-        server_socket.BindAddr()
-        server_socket.ListenConnection(5)
-        server_socket.AcceptConnection()
+        if server_socket.BindAddr() == True:
+            server_socket.ListenConnection(1)
+            client_socket, client_addr = server_socket.AcceptConnection()
+        else:
+            error_message = QLabel(self)
+            error_message.setText("IP Not Found")
+            error_message.move(200, 250)
+            error_message.show()
+        
+
+        
+
+
+    
         
         
 
