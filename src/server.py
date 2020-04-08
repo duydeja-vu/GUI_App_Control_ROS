@@ -1,4 +1,6 @@
 from socket import *
+from multiprocessing import Process
+
 
 class ServerSocket(object):
     def __init__(self):
@@ -19,11 +21,15 @@ class ServerSocket(object):
         except:
             return False
 
-    def ListenConnection(self, number_client):
-        self.fd.listen(number_client)
+    def ListenConnection(self):
+        
+        self.fd.listen(5)
+        client_fd, client_addr = self.fd.accept()
+        return("Client fd, client addr {0}:{1}".format(client_fd, client_addr))
+        
 
     def AcceptConnection(self):
-        (client_fd, client_addr) = self.fd.accept()
+        client_fd, client_addr = self.fd.accept()
         return (client_fd, client_addr)
 
     def CloseSocket(self):

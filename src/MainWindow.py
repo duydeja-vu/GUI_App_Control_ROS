@@ -4,6 +4,8 @@ from PyQt5.QtCore import pyqtSlot
 from server import ServerSocket
 import sys
 import os
+from multiprocessing import Process
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -19,32 +21,34 @@ class MainWindow(QMainWindow):
     def InitUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.x, self.y, self.width, self.height)
-        self.text_box = QLineEdit(self)
-        self.text_box.move(150, 130)
-        self.text_box.resize(200, 50)
-        self.button = QPushButton("ENTER", self)
-        self.button.move(200, 200)
+        # self.text_box = QLineEdit(self)
+        # self.text_box.move(150, 130)
+        # self.text_box.resize(200, 50)
+        self.button = QPushButton("ENTER for Start Server", self)
+        self.button.resize(250, 50)
+        self.button.move(140, 150)
         self.button.clicked.connect(self.StartServer)
         self.show()
 
     def StartServer(self):
-        PORT = 15553
-        try:
-            server_socket = ServerSocket()
-            print("Success Create Socket")
-        except:
-            exit(-1)
-        server_socket.IP = self.text_box.text()
-        server_socket.PORT = PORT
-        if server_socket.BindAddr() == True:
-            server_socket.ListenConnection(1)
-            client_socket, client_addr = server_socket.AcceptConnection()
-        else:
-            error_message = QLabel(self)
-            error_message.setText("IP Not Found")
-            error_message.move(200, 250)
-            error_message.show()
+        error_message = QLabel(self)
+        error_message.setText("Server Listening")
+        error_message.move(200, 250)
+        error_message.show()
+        listen_process = Process(target=self.SocketHandle)
+        listen_process.start()
         
+        
+        
+    def SocketHandle(self):
+        server_socket = ServerSocket()
+        server_socket.IP = '127.0.0.1'
+        server_socket.PORT = 15555
+        server_socket.BindAddr()
+        sum = server_socket.ListenConnection()
+        print(sum)
+        
+
 
         
 
