@@ -13,7 +13,11 @@ class ServerSocket(object):
 
     def BindAddr(self):
         ADDR = (self.IP, self.PORT)
-        self.fd.bind(ADDR)
+        try:
+            self.fd.bind(ADDR)
+            return True
+        except:
+            return False
 
     def ListenConnection(self, number_client):
         self.fd.listen(number_client)
@@ -24,3 +28,4 @@ class ServerSocket(object):
 
     def CloseSocket(self):
         self.fd.close()
+
