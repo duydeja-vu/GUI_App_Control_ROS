@@ -5,6 +5,7 @@ from server import ServerSocket
 import sys
 import os
 from multiprocessing import Process
+from threading import Thread
 
 
 class MainWindow(QMainWindow):
@@ -36,18 +37,22 @@ class MainWindow(QMainWindow):
         error_message.setText("Server Waiting Client...")
         error_message.move(200, 180)
         error_message.show()
-        listen_process = Process(target=self.SocketHandle)
-        listen_process.start()
+        
+
+        socket_process = Process(target=self.SocketHandle)
+        socket_process.start()
         
         
         
     def SocketHandle(self):
+        global sum
         server_socket = ServerSocket()
         server_socket.IP = '127.0.0.1'
         server_socket.PORT = 15555
         server_socket.BindAddr()
         sum = server_socket.ListenConnection()
-        print(sum)
+        
+        
         
 
 

@@ -25,7 +25,7 @@ class ServerSocket(object):
         
         self.fd.listen(5)
         client_fd, client_addr = self.fd.accept()
-        return("Client fd, client addr {0}:{1}".format(client_fd, client_addr))
+        return [client_fd, client_addr]
         
 
     def AcceptConnection(self):
