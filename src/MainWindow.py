@@ -7,9 +7,9 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 from server import ServerSocket
 import rospy
-from std_msgs.msgs import String
+from std_msgs.msg import String
 from geometry_msgs.msg import Twist
-from PID import PID
+
 
 
 
@@ -70,6 +70,8 @@ class MainWindow(QMainWindow):
         self.angular_value = self.CreateTextBox("p_value", 230, 400, 113, 25)
 
         self.confirm_button = self.CreateButton("CONFIRM", 160, 450, 89, 25)
+        self.confirm_button.clicked.connect(self.ConfirmButtonHandle)
+
         self.cmd_vel_button = self.CreateButton("/cmd_vel", 550, 160, 89, 25)
         self.odom_button = self.CreateButton("/odom", 550, 200, 89, 25)
         self.laser_button = self.CreateButton("/laser_scan", 550, 240, 89, 25)
@@ -77,23 +79,34 @@ class MainWindow(QMainWindow):
 
         self.text_browser = self.CreateTextBrowser("Name", 460, 330, 256, 192)
 
-
-        self.InitROS()
-        
-        #self.button.clicked.connect(self.StartServer)
         self.show()
 
+    def ConfirmButtonHandle(self):
+        data = []
+        data.append(self.p_value.text())
+        data.append(self.i_value.text())
+        data.append(self.d_value.text())
+        data.append(self.v_value.text())
+        data.append(self.v_ref_value.text())
 
-    def InitROS(self):
-        rospy.init_node('main', anonymous=True)
-        self.vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-        self.pid_publisher = rospy.Publisher('/pid', PID, queue_size=10)
-        try: 
-            self.TestFunction()
-        except rospy.ROSInitException:
-            pass
+        # linear_data = self.linear_value.text().split(',')
+        # x_linear = linear_data[0]
+        # y_linear = linear_data[1]
+        # z_linear = linear_data[2]
 
-    def TestFunction(self):
-        for i in range (0, 10):
-            self.text_browser.setText(str(i))
+        data.append(self.linear_value.text().split(','))
+
+        # angular_data = self.angular_value.text().split(',')
+        # x_angular = angular_data[0]
+        # y_angular = angular_data[1]
+        # z_angular = angular_data[2]
+        data.append(self.angular_value.text().split(','))
+        self.SetCommand(data)
+
+    def SetCommand(self, command):
+        self.text_browser.setText(str(command))
+
+        
+
+        
 
