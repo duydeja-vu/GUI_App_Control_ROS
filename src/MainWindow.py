@@ -7,7 +7,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 from server import ServerSocket
 import rospy
-from std_msgs.msg import String
+from std_msgs.msgs import String
 from geometry_msgs.msg import Twist
 from PID import PID
 
