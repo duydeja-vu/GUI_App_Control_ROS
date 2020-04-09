@@ -14,13 +14,14 @@ from geometry_msgs.msg import Twist
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, q):
         super().__init__()
         self.title = "Robot Control Panel"
         self.x = 0
         self.y = 0
         self.width = 800
         self.height = 600
+        self.q = q
 
     def CreateTextBox(self, text_name, x, y, width, height):
         new_text = QLineEdit(self)
@@ -102,6 +103,7 @@ class MainWindow(QMainWindow):
         # z_angular = angular_data[2]
         data.append(self.angular_value.text().split(','))
         self.SetCommand(data)
+        self.q.put(data)
 
     def SetCommand(self, command):
         self.text_browser.setText(str(command))
