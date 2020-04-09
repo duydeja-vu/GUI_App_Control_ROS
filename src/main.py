@@ -16,8 +16,6 @@ q = Queue()
 
 
 def StartGUI():
-    global gui_pid
-    gui_pid = os.getpid()
     app = QApplication(sys.argv)
     main_window = MainWindow(q)
     main_window.InitUI()
