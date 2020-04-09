@@ -7,36 +7,62 @@ import rospy
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 from multiprocessing import Process, Queue
+import os
 
 q = Queue()
 
+
+
+
+
 def StartGUI():
+    global gui_pid
+    gui_pid = os.getpid()
     app = QApplication(sys.argv)
-    main_window = MainWindow()
+    main_window = MainWindow(q)
     main_window.InitUI()
-    value = q.get()
     sys.exit(app.exec_())
+   
 
-
-    
-
-    
-    
+def StartROS():
+    rospy.init_node('main', anonymous=True)
+    data = []
+    while True:
+        if q.qsize() != 0:
+            data = q.get()
+        RobotControl(data)
 
 
 def main():
     p_1 = Process(target=StartGUI)
+    p_2 = Process(target=StartROS)
     p_1.start()
-    rospy.init_node('main', anonymous=True)
-    vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-    pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
-    q.put(["Start ROS", 1])
+    p_2.start()
+
+   
+
+
+
+    
         
-    rospy.spin()
+    
+    
+    
+
+def RobotControl(data):
+    # msg = Twist()
+    # vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+    # pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
+    print("Robot control")
+
+    
+    
+        
 
 
 if __name__ == "__main__":
     main()
+    
         
 
 
