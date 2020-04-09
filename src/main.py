@@ -1,5 +1,5 @@
-from MainWindow import Ui_MainWindow
-from PyQt5 import QtWidgets, QtCore, QtGui
+from MainWindow import MainWindow
+from PyQt5.QtWidgets import QApplication
 import sys
 import time
 
@@ -9,11 +9,10 @@ import time
 
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    app = QApplication(sys.argv)
+    main_window = MainWindow()
+    main_window.InitUI()
+    main_window.test()
     sys.exit(app.exec_())
 
 
