@@ -6,6 +6,10 @@ from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QPushButton, QAct
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 from server import ServerSocket
+import rospy
+from std_msgs.msg import String
+from geometry_msgs.msg import Twist
+from PID import PID
 
 
 
@@ -74,10 +78,20 @@ class MainWindow(QMainWindow):
         self.text_browser = self.CreateTextBrowser("Name", 460, 330, 256, 192)
 
 
-
+        self.InitROS()
         
         #self.button.clicked.connect(self.StartServer)
         self.show()
 
-    def test(self):
-        self.text_browser.setText("Test")
+    def InitROS(self):
+        rospy.init_node('main', anonymous=True)
+        self.vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+        self.pid_publisher = rospy.Publisher('/pid', PID, queue_size=10)
+        try: 
+            self.TestFunction()
+        except rospy.ROSInitException:
+            pass
+
+    def TestFunction(self):
+        for i in range (0, 10):
+            self.text_browser.setText(str(i))
