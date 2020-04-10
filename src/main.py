@@ -57,8 +57,8 @@ def RobotControl(data, vel_pub, pid_pub):
         print(msg.angular.z)
 
         # print(data[0])
-        vel_publisher.publish(msg)
-        pid_publisher.publish(str(data[0]))
+        vel_pub.publish(msg)
+        pid_pub.publish(str(data[0]))
 
 
 main_process = MainProcessing()
