@@ -81,11 +81,12 @@ class MainWindow(QMainWindow):
 
     def ConfirmButtonHandle(self):
         data = []
-        data.append(self.p_value.text())
-        data.append(self.i_value.text())
-        data.append(self.d_value.text())
-        data.append(self.v_value.text())
-        data.append(self.v_ref_value.text())
+        pid_data = []
+        pid_data.append(self.p_value.text())
+        pid_data.append(self.i_value.text())
+        pid_data.append(self.d_value.text())
+        pid_data.append(self.v_value.text())
+        pid_data.append(self.v_ref_value.text())
         linear_data = self.linear_value.text().split(',')
         angular_data = self.angular_value.text().split(',')
         if len(linear_data) < 3:
@@ -94,9 +95,9 @@ class MainWindow(QMainWindow):
         if len(angular_data) < 3:
             for i in range(len(angular_data), 3):
                 angular_data.append(None)
+        data.append(pid_data)
         data.append(linear_data)
         data.append(angular_data)
-        map(float, data)
         self.SetCommand(data)
         self.q.put(data)
 
