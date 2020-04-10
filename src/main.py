@@ -41,12 +41,12 @@ def RobotControl(data):
     vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
     pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
     if len(data) != 0:
-        msg.linear.x = int(data[5][0])
-        msg.linear.y = int(data[5][1])
-        msg.linear.z = int(data[5][2])
-        msg.angular.x = int(data[6][0])
-        msg.angular.y = int(data[6][1])
-        msg.angular.z = int(data[6][2])
+        msg.linear.x = data[5][0]
+        msg.linear.y = data[5][1]
+        msg.linear.z = data[5][2]
+        msg.angular.x = data[6][0]
+        msg.angular.y = data[6][1]
+        msg.angular.z = data[6][2]
         print(msg)
         vel_publisher.publish(msg)
 
