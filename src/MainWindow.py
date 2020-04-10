@@ -97,6 +97,11 @@ class MainWindow(QMainWindow):
         if len(angular_data) < 3:
             for i in range(len(angular_data), 3):
                 angular_data.append(None)
+        # linear_data = self.linear_value.text().split(',')
+        # x_linear = linear_data[0]
+        # y_linear = linear_data[1]
+        # z_linear = linear_data[2]
+               
         data.append(linear_data)
         data.append(angular_data)
         self.SetCommand(data)
