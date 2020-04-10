@@ -38,7 +38,7 @@ class MainProcessing(MainWindow):
 
 
 
-def RobotControl(data):
+def RobotControl(data, vel_pub, pid_pub):
     
     msg = Twist()
     
