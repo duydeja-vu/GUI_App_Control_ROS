@@ -12,8 +12,15 @@ import os
 q = Queue()
 
 
+def RobotControl(data):
+    msg = Twist()
 
-
+    # vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+    # pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
+    if len(data) != 0:
+        msg.linear.x = int(data[5][0])
+        print(msg.linear.x)
+        
 
 def StartGUI():
     app = QApplication(sys.argv)
@@ -25,10 +32,13 @@ def StartGUI():
 def StartROS():
     rospy.init_node('main', anonymous=True)
     data = []
-    while True:
+    data_temp = []
+    while not rospy.is_shutdown():
         if q.qsize() != 0:
             data = q.get()
-        RobotControl(data)
+            data_temp = data
+        
+        RobotControl(data_temp)
 
 
 def main():
@@ -47,11 +57,6 @@ def main():
     
     
 
-def RobotControl(data):
-    # msg = Twist()
-    # vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-    # pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
-    print("Robot control")
 
     
     
