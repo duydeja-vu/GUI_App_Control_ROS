@@ -89,19 +89,16 @@ class MainWindow(QMainWindow):
         data.append(self.d_value.text())
         data.append(self.v_value.text())
         data.append(self.v_ref_value.text())
-
-        # linear_data = self.linear_value.text().split(',')
-        # x_linear = linear_data[0]
-        # y_linear = linear_data[1]
-        # z_linear = linear_data[2]
-
-        data.append(self.linear_value.text().split(','))
-
-        # angular_data = self.angular_value.text().split(',')
-        # x_angular = angular_data[0]
-        # y_angular = angular_data[1]
-        # z_angular = angular_data[2]
-        data.append(self.angular_value.text().split(','))
+        linear_data = self.linear_value.text().split(',')
+        angular_data = self.angular_value.text().split(',')
+        if len(linear_data) < 3:
+            for i in range(len(linear_data), 3):
+                linear_data.append(None)
+        if len(angular_data) < 3:
+            for i in range(len(angular_data), 3):
+                angular_data.append(None)
+        data.append(linear_data)
+        data.append(angular_data)
         self.SetCommand(data)
         self.q.put(data)
 
