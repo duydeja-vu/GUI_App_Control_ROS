@@ -37,18 +37,27 @@ class MainProcessing(MainWindow):
 
 
 def RobotControl(data):
-    msg = Twist()
     vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
     pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
+    msg = Twist()
+    
     if len(data) != 0:
-        msg.linear.x = data[5][0]
-        msg.linear.y = data[5][1]
-        msg.linear.z = data[5][2]
-        msg.angular.x = data[6][0]
-        msg.angular.y = data[6][1]
-        msg.angular.z = data[6][2]
-        print(msg)
+        msg.linear.x = int(data[1][0])
+        msg.linear.y = int(data[1][1])
+        msg.linear.z = int(data[1][2])
+        msg.angular.x = int(data[2][0])
+        msg.angular.y = int(data[2][1])
+        msg.angular.z = int(data[2][2])
+        print(type(msg.linear.x))
+        print(msg.linear.y)
+        print(msg.linear.z)
+        print(msg.angular.x)
+        print(msg.angular.y)
+        print(msg.angular.z)
+
+        # print(data[0])
         vel_publisher.publish(msg)
+        pid_publisher.publish(str(data[0]))
 
 
 main_process = MainProcessing()
