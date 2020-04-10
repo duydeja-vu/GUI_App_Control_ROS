@@ -24,6 +24,8 @@ class MainProcessing(MainWindow):
 
     def StartROS(self):
         rospy.init_node('main', anonymous=True)
+        vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+        pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
         data = []
         data_temp = []
         while not rospy.is_shutdown():
@@ -31,14 +33,13 @@ class MainProcessing(MainWindow):
                 data = self.q.get()
                 data_temp = data
                 #print(self.GUI_process_done)
-            RobotControl(data_temp)
+            RobotControl(data_temp, vel_publisher, pid_publisher)
             
 
 
 
 def RobotControl(data):
-    vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-    pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
+    
     msg = Twist()
     
     if len(data) != 0:
