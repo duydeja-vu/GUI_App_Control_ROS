@@ -9,17 +9,29 @@ from geometry_msgs.msg import Twist
 from multiprocessing import Process, Queue
 import os
 
+
+
+
 q = Queue()
+
 
 
 def RobotControl(data):
     msg = Twist()
 
-    # vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-    # pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
+
+    vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+    pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
     if len(data) != 0:
         msg.linear.x = int(data[5][0])
-        print(msg.linear.x)
+        msg.linear.y = int(data[5][1])
+        msg.linear.z = int(data[5][2])
+        msg.angular.x = int(data[6][0])
+        msg.angular.y = int(data[6][1])
+        msg.angular.z = int(data[6][2])
+        
+        
+
         
 
 def StartGUI():
@@ -37,7 +49,6 @@ def StartROS():
         if q.qsize() != 0:
             data = q.get()
             data_temp = data
-        
         RobotControl(data_temp)
 
 
@@ -64,7 +75,10 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except:
+        exit(1)
     
         
 
