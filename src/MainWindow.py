@@ -6,9 +6,6 @@ from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QPushButton, QAct
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 from server import ServerSocket
-import rospy
-from std_msgs.msg import String
-from geometry_msgs.msg import Twist
 
 
 
@@ -97,13 +94,9 @@ class MainWindow(QMainWindow):
         if len(angular_data) < 3:
             for i in range(len(angular_data), 3):
                 angular_data.append(None)
-        # linear_data = self.linear_value.text().split(',')
-        # x_linear = linear_data[0]
-        # y_linear = linear_data[1]
-        # z_linear = linear_data[2]
-               
         data.append(linear_data)
         data.append(angular_data)
+        map(float, data)
         self.SetCommand(data)
         self.q.put(data)
 
