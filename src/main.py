@@ -12,16 +12,17 @@ import os
 
 class MainProcessing(MainWindow, ServerSocket):
     def __init__(self):
-        self.q = Queue()
+        self.q_GUI_ROS = Queue()
+        self.q_GUI_Socket = Queue()
+        self.q_ROS_Socket = Queue()
         self.GUI_process_done = None
         self.ROS_process_done = None
         self.remote_control = False
 
     def StartGUI(self):
         app = QApplication(sys.argv)
-        if self.remote_control == False:
-            main_window = MainWindow(self.q)
-            main_window.InitUI()
+        main_window = MainWindow(self.q_GUI_ROS, self.q_GUI_Socket)
+        main_window.InitUI()
         sys.exit(app.exec_())
 
     def StartROS(self):
@@ -31,9 +32,10 @@ class MainProcessing(MainWindow, ServerSocket):
         data = []
         data_temp = []
         while not rospy.is_shutdown():
-            if self.q.qsize() != 0:
-                data = self.q.get()
-                data_temp = data
+            if self.q_GUI_ROS.qsize() != 0:
+                data = self.q_GUI_ROS.get()
+                if data != "Remote Control Mode":
+                    data_temp = data
                 #print(self.GUI_process_done)
             RobotControl(data_temp, vel_publisher, pid_publisher)
 
@@ -45,11 +47,10 @@ class MainProcessing(MainWindow, ServerSocket):
         server_socket.PORT = 15555
         server_socket.BindAddr()
         print("Bind Success")
-        self.remote_control = True
-        print(self.remote_control)
+        self.q_GUI_Socket.put(False)
         client_fd, client_addr = server_socket.ListenConnection()
         
-
+        self.q_GUI_Socket.put(True)
 
 def RobotControl(data, vel_pub, pid_pub):
     msg = Twist()
