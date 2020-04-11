@@ -17,18 +17,14 @@ class MainProcessing(MainWindow, ServerSocket):
         self.q_GUI_Socket = Queue()
         self.q_ROS_Socket = Queue()
         
-        
-
     def StartGUI(self):
         app = QApplication(sys.argv)
-        self.GUI_pid = os.getpid()
         main_window = MainWindow(self.q_GUI_ROS, self.q_GUI_Socket)
         main_window.InitUI()
         sys.exit(app.exec_())
 
     def StartROS(self):
         rospy.init_node('main', anonymous=True)
-        self.ROS_pid = os.getpid()
         vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
         data = []
@@ -43,15 +39,17 @@ class MainProcessing(MainWindow, ServerSocket):
 
     def StartSocket(self):
         server_socket = ServerSocket()
-        self.Socket_pid = os.getpid()
-        server_socket.CreateSocket()
         server_socket.IP = '127.0.0.1'
         server_socket.PORT = 15555
         server_socket.BindAddr()
         print("Bind Success")
         self.q_GUI_Socket.put(False)
+        self.q_ROS_Socket.put(False)
         client_fd, client_addr = server_socket.ListenConnection()
         self.q_GUI_Socket.put(True)
+        self.q_ROS_Socket.put(True)
+
+
 
     
 
