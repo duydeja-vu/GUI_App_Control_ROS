@@ -11,14 +11,16 @@ from server import ServerSocket
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, q):
+    def __init__(self, q_GUI_ROS, q_GUI_Socket):
         super().__init__()
         self.title = "Robot Control Panel"
         self.x = 0
         self.y = 0
         self.width = 800
         self.height = 600
-        self.q = q
+        self.q_GUI_ROS = q_GUI_ROS
+        self.q_GUI_Socket = q_GUI_Socket
+        self.remot_control_mode = False
 
     def CreateTextBox(self, text_name, x, y, width, height):
         new_text = QLineEdit(self)
@@ -81,25 +83,31 @@ class MainWindow(QMainWindow):
 
     def ConfirmButtonHandle(self):
         data = []
-        pid_data = []
-        pid_data.append(self.p_value.text())
-        pid_data.append(self.i_value.text())
-        pid_data.append(self.d_value.text())
-        pid_data.append(self.v_value.text())
-        pid_data.append(self.v_ref_value.text())
-        linear_data = self.linear_value.text().split(',')
-        angular_data = self.angular_value.text().split(',')
-        if len(linear_data) < 3:
-            for i in range(len(linear_data), 3):
-                linear_data.append(None)
-        if len(angular_data) < 3:
-            for i in range(len(angular_data), 3):
-                angular_data.append(None)
-        data.append(pid_data)
-        data.append(linear_data)
-        data.append(angular_data)
-        self.SetCommand(data)
-        self.q.put(data)
+        if self.q_GUI_Socket.qsize() != 0:
+            self.remote_control_mode = self.q_GUI_Socket.get()
+        if self.remote_control_mode == False:
+            pid_data = []
+            pid_data.append(self.p_value.text())
+            pid_data.append(self.i_value.text())
+            pid_data.append(self.d_value.text())
+            pid_data.append(self.v_value.text())
+            pid_data.append(self.v_ref_value.text())
+            linear_data = self.linear_value.text().split(',')
+            angular_data = self.angular_value.text().split(',')
+            if len(linear_data) < 3:
+                for i in range(len(linear_data), 3):
+                    linear_data.append(None)
+            if len(angular_data) < 3:
+                for i in range(len(angular_data), 3):
+                    angular_data.append(None)
+            data.append(pid_data)
+            data.append(linear_data)
+            data.append(angular_data)
+            self.SetCommand(data)
+            self.q_GUI_ROS.put(data)
+        else:
+            self.SetCommand("On Remote Control Mode")
+            data.append("Remote Control Mode")
 
     def SetCommand(self, command):
         self.text_browser.setText(str(command))
