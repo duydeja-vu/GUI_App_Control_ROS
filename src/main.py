@@ -10,23 +10,25 @@ from multiprocessing import Process, Queue
 import os
 
 
+
 class MainProcessing(MainWindow, ServerSocket):
     def __init__(self):
         self.q_GUI_ROS = Queue()
         self.q_GUI_Socket = Queue()
         self.q_ROS_Socket = Queue()
-        self.GUI_process_done = None
-        self.ROS_process_done = None
-        self.remote_control = False
+        
+        
 
     def StartGUI(self):
         app = QApplication(sys.argv)
+        self.GUI_pid = os.getpid()
         main_window = MainWindow(self.q_GUI_ROS, self.q_GUI_Socket)
         main_window.InitUI()
         sys.exit(app.exec_())
 
     def StartROS(self):
         rospy.init_node('main', anonymous=True)
+        self.ROS_pid = os.getpid()
         vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
         data = []
@@ -39,9 +41,9 @@ class MainProcessing(MainWindow, ServerSocket):
                 #print(self.GUI_process_done)
             RobotControl(data_temp, vel_publisher, pid_publisher)
 
-    
     def StartSocket(self):
         server_socket = ServerSocket()
+        self.Socket_pid = os.getpid()
         server_socket.CreateSocket()
         server_socket.IP = '127.0.0.1'
         server_socket.PORT = 15555
@@ -49,8 +51,9 @@ class MainProcessing(MainWindow, ServerSocket):
         print("Bind Success")
         self.q_GUI_Socket.put(False)
         client_fd, client_addr = server_socket.ListenConnection()
-        
         self.q_GUI_Socket.put(True)
+
+    
 
 def RobotControl(data, vel_pub, pid_pub):
     msg = Twist()
@@ -61,28 +64,25 @@ def RobotControl(data, vel_pub, pid_pub):
         msg.angular.x = int(data[2][0])
         msg.angular.y = int(data[2][1])
         msg.angular.z = int(data[2][2])
-        # print(type(msg.linear.x))
-        # print(msg.linear.y)
-        # print(msg.linear.z)
-        # print(msg.angular.x)
-        # print(msg.angular.y)
-        # print(msg.angular.z)
-
-        # print(data[0])
         vel_pub.publish(msg)
         pid_pub.publish(str(data[0]))
 
 
 main_process = MainProcessing()
 
+def StartROSCore():
+    os.system('roscore')
+
+
 def main():
+    p_0 = Process(target=StartROSCore)
     p_1 = Process(target=main_process.StartGUI)
     p_2 = Process(target=main_process.StartROS)
     p_3 = Process(target=main_process.StartSocket)
+    p_0.start()
     p_1.start()
     p_2.start()
     p_3.start()
-
 
 if __name__ == "__main__":
     try:
