@@ -1,8 +1,8 @@
 from MainWindow import MainWindow
 from PyQt5.QtWidgets import QApplication
+from server import ServerSocket
 import sys
 import time
-import asyncio
 import rospy
 from std_msgs.msg import String
 from geometry_msgs.msg import Twist
@@ -10,7 +10,7 @@ from multiprocessing import Process, Queue
 import os
 
 
-class MainProcessing(MainWindow):
+class MainProcessing(MainWindow, ServerSocket):
     def __init__(self):
         self.q = Queue()
         self.GUI_process_done = None
@@ -34,6 +34,7 @@ class MainProcessing(MainWindow):
                 data_temp = data
                 #print(self.GUI_process_done)
             RobotControl(data_temp, vel_publisher, pid_publisher)
+
             
 
 
