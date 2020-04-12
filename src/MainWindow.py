@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QPushButton, QAct
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 from server import ServerSocket
+import os 
 
 
 
@@ -111,12 +112,17 @@ class MainWindow(QMainWindow):
 
     def CmdVelButtonHandle(self):
         self.text_browser.clear()
+        output = self.linear_value.text() + " " + self.angular_value.text()
+        self.SetCommand(output)
+
+
 
     def OdomButtonHandle(self):
         self.text_browser.clear()
 
     def PIDButtonHandle(self):
         self.text_browser.clear()
+        #output = self.linear_value.text() + " " + self.angular_value.text()
 
     def SetCommand(self, command):
         self.text_browser.setText(str(command))
