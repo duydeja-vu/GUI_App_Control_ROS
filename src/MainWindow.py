@@ -65,13 +65,17 @@ class MainWindow(QMainWindow):
         self.confirm_button = self.CreateButton("CONFIRM", 160, 450, 89, 25)
         self.confirm_button.clicked.connect(self.ConfirmButtonHandle)
         self.cmd_vel_button = self.CreateButton("/cmd_vel", 550, 160, 89, 25)
+        self.cmd_vel_button.clicked.connect(self.CmdVelButtonHandle)
         self.odom_button = self.CreateButton("/odom", 550, 200, 89, 25)
+        self.odom_button.clicked.connect(self.OdomButtonHandle)
         self.laser_button = self.CreateButton("/laser_scan", 550, 240, 89, 25)
         self.pid_button = self.CreateButton("/pid", 550, 280, 89, 25)
+        self.pid_button.clicked.connect(self.PIDButtonHandle)
         self.text_browser = self.CreateTextBrowser("Name", 460, 330, 256, 192)
         self.show()
 
     def ConfirmButtonHandle(self):
+        self.text_browser.clear()
         data = []
 
         if self.q_GUI_Socket.qsize() != 0:
@@ -105,8 +109,19 @@ class MainWindow(QMainWindow):
             self.SetCommand("On Remote Control Mode")
             data.append("Remote Control Mode")
 
+    def CmdVelButtonHandle(self):
+        self.text_browser.clear()
+
+    def OdomButtonHandle(self):
+        self.text_browser.clear()
+
+    def PIDButtonHandle(self):
+        self.text_browser.clear()
+
     def SetCommand(self, command):
         self.text_browser.setText(str(command))
+
+    
 
 
         
