@@ -8,7 +8,7 @@ from std_msgs.msg import String
 from geometry_msgs.msg import Twist
 from multiprocessing import Process, Queue
 import os
-
+import signal
 
 
 class MainProcessing(MainWindow, ServerSocket):
@@ -17,6 +17,7 @@ class MainProcessing(MainWindow, ServerSocket):
         self.q_GUI_Socket = Queue()
         self.q_ROS_Socket = Queue()
         
+
     def StartGUI(self):
         app = QApplication(sys.argv)
         main_window = MainWindow(self.q_GUI_ROS, self.q_GUI_Socket)
@@ -34,7 +35,6 @@ class MainProcessing(MainWindow, ServerSocket):
                 data = self.q_GUI_ROS.get()
                 if data != "Remote Control Mode":
                     data_temp = data
-                #print(self.GUI_process_done)
             RobotControl(data_temp, vel_publisher, pid_publisher)
 
     def StartSocket(self):
@@ -49,9 +49,6 @@ class MainProcessing(MainWindow, ServerSocket):
         self.q_GUI_Socket.put(True)
         self.q_ROS_Socket.put(True)
 
-
-
-    
 
 def RobotControl(data, vel_pub, pid_pub):
     msg = Twist()
@@ -68,8 +65,13 @@ def RobotControl(data, vel_pub, pid_pub):
 
 main_process = MainProcessing()
 
+
 def StartROSCore():
-    os.system('roscore')
+    try:
+        os.system('roscore')
+    except:
+        pass
+
 
 
 def main():
@@ -81,15 +83,15 @@ def main():
     p_1.start()
     p_2.start()
     p_3.start()
+    while p_1.is_alive() == True:
+        continue
+    my_pid = os.getpid()
+    os.system("pkill -P {0}".format(my_pid))
+
 
 if __name__ == "__main__":
     try:
         main()
     except:
         exit(1)
-    
-        
-
-
-
 
