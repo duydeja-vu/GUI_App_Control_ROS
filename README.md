@@ -1,7 +1,7 @@
 # GUI_App_Control_ROS
 
 [IN PROGESS]
-GUI Application that control the Robot via socket and ROS
+GUI Application controlling the Robot via socket and ROS
 
 ## To run this application, follow the instruction below:
 - > cd  {YOUR ROS WORSPACE}
