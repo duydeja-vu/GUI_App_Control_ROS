@@ -4,7 +4,7 @@
 GUI Application that control the Robot via socket and ROS
 
 ## To run this application, follow the instruction below:
-- > cd <YOUR ROS WORSPACE>
+- > cd  {YOUR ROS WORSPACE}
 
 - > source ./devel/setup.bash
 
