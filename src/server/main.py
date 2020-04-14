@@ -1,4 +1,7 @@
-from MainWindow import MainWindow
+import sys
+sys.path.append("..")
+
+from MainWindow.MainWindow import MainWindow
 from PyQt5.QtWidgets import QApplication
 from server import ServerSocket
 import sys
