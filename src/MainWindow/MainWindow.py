@@ -1,11 +1,9 @@
-from server import ServerSocket
 import sys
 import os   
 from multiprocessing import Process
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QPushButton, QAction, QLineEdit, QMessageBox, QTextBrowser
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
-from server import ServerSocket
 import os 
 
 
