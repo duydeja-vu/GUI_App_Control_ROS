@@ -1,7 +1,9 @@
-from MainWindow import MainWindow
+import sys
+sys.path.append("..")
+
+from MainWindow.MainWindow import MainWindow
 from PyQt5.QtWidgets import QApplication
 from client import ClientSocket
-import sys
 import time
 from multiprocessing import Process, Queue
 import os
@@ -12,7 +14,7 @@ class MainProcessing(MainWindow, ClientSocket):
     
     def StartGUI(self):
         app = QApplication(sys.argv)
-        main_window = MainWindow(self.q_GUI_Socket)
+        main_window = MainWindow(self.q_GUI_Socket, None)
         main_window.InitUI()
         sys.exit(app.exec_())
 
