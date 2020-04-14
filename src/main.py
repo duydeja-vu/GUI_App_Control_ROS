@@ -16,8 +16,7 @@ class MainProcessing(MainWindow, ServerSocket):
         self.q_GUI_ROS = Queue()
         self.q_GUI_Socket = Queue()
         self.q_ROS_Socket = Queue()
-        
-
+       
     def StartGUI(self):
         app = QApplication(sys.argv)
         main_window = MainWindow(self.q_GUI_ROS, self.q_GUI_Socket)
@@ -28,13 +27,13 @@ class MainProcessing(MainWindow, ServerSocket):
         rospy.init_node('main', anonymous=True)
         vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
-        data = []
+        GUI_data = []
         data_temp = []
         while not rospy.is_shutdown():
             if self.q_GUI_ROS.qsize() != 0:
-                data = self.q_GUI_ROS.get()
-                if data != "Remote Control Mode":
-                    data_temp = data
+                GUI_data = self.q_GUI_ROS.get()
+                if GUI_data != "Remote Control Mode":
+                    data_temp = GUI_data
             RobotControl(data_temp, vel_publisher, pid_publisher)
 
     def StartSocket(self):
@@ -64,11 +63,14 @@ def RobotControl(data, vel_pub, pid_pub):
 
 
 main_process = MainProcessing()
-
+stated_roscore = False
 
 def StartROSCore():
+    global stated_roscore 
     try:
-        os.system('roscore')
+        if stated_roscore == False:
+            os.system('roscore')
+            stated_roscore = True
     except:
         pass
 
@@ -76,13 +78,18 @@ def StartROSCore():
 
 def main():
     p_0 = Process(target=StartROSCore)
+
     p_1 = Process(target=main_process.StartGUI)
+
     p_2 = Process(target=main_process.StartROS)
+
     p_3 = Process(target=main_process.StartSocket)
+
     p_0.start()
     p_1.start()
     p_2.start()
     p_3.start()
+
     while p_1.is_alive() == True:
         continue
     my_pid = os.getpid()
