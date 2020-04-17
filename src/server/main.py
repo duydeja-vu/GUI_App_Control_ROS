@@ -24,14 +24,13 @@ class MainProcessing(MainWindow):
        
     def StartGUI(self):
         app = QApplication(sys.argv)
-        main_window = MainWindow(self.q_GUI_ROS, self.q_Socket_GUI)
+        main_window = MainWindow(q_GUI_ROS=self.q_GUI_ROS, q_Socket_GUI=self.q_Socket_GUI, is_server=True)
         main_window.InitUI()
         sys.exit(app.exec_())
 
     def StartROSNode(self):
         rospy.init_node('main', anonymous=True)
         vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-        stated_ROS_node = True
         pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
         GUI_data = []
         data_pub = []
