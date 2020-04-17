@@ -111,7 +111,7 @@ class MainWindow(QMainWindow):
 
             else:
                 self.SetCommand("On Remote Control Mode")
-                data.append("Remote Control Mode")
+                
 
         if self.is_client == True:
             self.SetCommand("Client")
