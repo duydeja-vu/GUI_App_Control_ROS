@@ -12,11 +12,10 @@ from geometry_msgs.msg import Twist
 from multiprocessing import Process, Queue
 import os
 import signal
+from socket import *
 
 
-stated_ROS_node = False
-
-class MainProcessing(MainWindow, ServerSocket):
+class MainProcessing(MainWindow):
     def __init__(self):
         self.q_GUI_ROS = Queue()
         self.q_GUI_Socket = Queue()
@@ -31,11 +30,9 @@ class MainProcessing(MainWindow, ServerSocket):
         sys.exit(app.exec_())
 
     def StartROSNode(self):
-        global stated_ROS_node
-        if stated_ROS_node == False:
-            rospy.init_node('main', anonymous=True)
-            vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
-            stated_ROS_node = True
+        rospy.init_node('main', anonymous=True)
+        vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+        stated_ROS_node = True
         pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
         GUI_data = []
         data_pub = []
@@ -54,16 +51,17 @@ class MainProcessing(MainWindow, ServerSocket):
             RobotControl(data_pub, vel_publisher, pid_publisher)
 
     def StartSocket(self):
-        server_socket = ServerSocket()
-        server_socket.IP = '127.0.0.1'
-        server_socket.PORT = 15555
-        server_socket.BindAddr()
-        print("Bind Success")
+        server_socket = socket(AF_INET, SOCK_STREAM, 0)
+        server_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        IP = '127.0.0.1'
+        PORT = 15555
+        server_socket.bind((IP, PORT))
         socket_ros_data = []
         socket_ros_data.append(False)
         self.q_GUI_Socket.put(False)
         self.q_ROS_Socket.put(socket_ros_data)
-        client_fd, client_addr = server_socket.ListenConnection()
+        server_socket.listen()
+        client_fd, client_addr = server_socket.accept()
         socket_ros_data.append(True)
         self.q_GUI_Socket.put(True)
         self.q_ROS_Socket.put(socket_ros_data)
