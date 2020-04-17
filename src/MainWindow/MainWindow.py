@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
         self.height = 600
         self.q_GUI_ROS = q_GUI_ROS
         self.q_Socket_GUI = q_Socket_GUI
-        self.q_GUI_Socket_GUI = q_GUI_Socket
+        self.q_GUI_Socket = q_GUI_Socket
         self.remote_control_mode = False
         self.is_server = is_server
         self.is_client = is_client
