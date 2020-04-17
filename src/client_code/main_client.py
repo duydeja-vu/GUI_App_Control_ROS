@@ -3,12 +3,12 @@ sys.path.append("..")
 
 from MainWindow.MainWindow import MainWindow
 from PyQt5.QtWidgets import QApplication
-from client import ClientSocket
 import time
 from multiprocessing import Process, Queue
 import os
+from socket import *
 
-class MainProcessing(MainWindow, ClientSocket):
+class MainProcessing(MainWindow):
     def __init__(self):
         self.q_GUI_Socket = Queue()
     
@@ -19,8 +19,11 @@ class MainProcessing(MainWindow, ClientSocket):
         sys.exit(app.exec_())
 
     def StartSocket(self):
-        client_socket = ClientSocket()
-        client_socket.ConnectToServer()
+        client_socket = socket(AF_INET, SOCK_STREAM, 0)
+        SERVER_HOST = '127.0.0.1'
+        SERVER_PORT = 15555
+        client_socket.connect((SERVER_HOST, SERVER_PORT))
+
 
 main_process = MainProcessing()
 
