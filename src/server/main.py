@@ -19,6 +19,8 @@ class MainProcessing(MainWindow, ServerSocket):
         self.q_GUI_ROS = Queue()
         self.q_GUI_Socket = Queue()
         self.q_ROS_Socket = Queue()
+        self.client_connect = False
+
        
     def StartGUI(self):
         app = QApplication(sys.argv)
@@ -31,13 +33,20 @@ class MainProcessing(MainWindow, ServerSocket):
         vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
         GUI_data = []
-        data_temp = []
+        data_pub = []
+        socket_data = []
         while not rospy.is_shutdown():
-            if self.q_GUI_ROS.qsize() != 0:
-                GUI_data = self.q_GUI_ROS.get()
-                if GUI_data != "Remote Control Mode":
-                    data_temp = GUI_data
-            RobotControl(data_temp, vel_publisher, pid_publisher)
+            if self.q_ROS_Socket.qsize() != 0:
+                socket_data = self.q_ROS_Socket.get()
+                self.client_connect = socket_data[0]
+            if self.client_connect == False:
+                if self.q_GUI_ROS.qsize() != 0:
+                    GUI_data = self.q_GUI_ROS.get()
+                    data_pub = GUI_data
+            else:
+                print(self.client_connect)
+
+            RobotControl(data_pub, vel_publisher, pid_publisher)
 
     def StartSocket(self):
         server_socket = ServerSocket()
@@ -45,11 +54,15 @@ class MainProcessing(MainWindow, ServerSocket):
         server_socket.PORT = 15555
         server_socket.BindAddr()
         print("Bind Success")
+        socket_ros_data = []
+        socket_ros_data.append(False)
         self.q_GUI_Socket.put(False)
-        self.q_ROS_Socket.put(False)
+        self.q_ROS_Socket.put(socket_ros_data)
         client_fd, client_addr = server_socket.ListenConnection()
+        socket_ros_data.append(True)
         self.q_GUI_Socket.put(True)
-        self.q_ROS_Socket.put(True)
+        self.q_ROS_Socket.put(socket_ros_data)
+        
 
 
 def RobotControl(data, vel_pub, pid_pub):
