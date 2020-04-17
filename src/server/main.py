@@ -3,7 +3,6 @@ sys.path.append("..")
 
 from MainWindow.MainWindow import MainWindow
 from PyQt5.QtWidgets import QApplication
-from server import ServerSocket
 import sys
 import time
 import rospy
@@ -18,14 +17,14 @@ from socket import *
 class MainProcessing(MainWindow):
     def __init__(self):
         self.q_GUI_ROS = Queue()
-        self.q_GUI_Socket = Queue()
+        self.q_Socket_GUI = Queue()
         self.q_ROS_Socket = Queue()
         self.client_connect = False
 
        
     def StartGUI(self):
         app = QApplication(sys.argv)
-        main_window = MainWindow(self.q_GUI_ROS, self.q_GUI_Socket)
+        main_window = MainWindow(self.q_GUI_ROS, self.q_Socket_GUI)
         main_window.InitUI()
         sys.exit(app.exec_())
 
@@ -58,12 +57,12 @@ class MainProcessing(MainWindow):
         server_socket.bind((IP, PORT))
         socket_ros_data = []
         socket_ros_data.append(False)
-        self.q_GUI_Socket.put(False)
+        self.q_Socket_GUI.put(False)
         self.q_ROS_Socket.put(socket_ros_data)
         server_socket.listen()
         client_fd, client_addr = server_socket.accept()
         socket_ros_data.append(True)
-        self.q_GUI_Socket.put(True)
+        self.q_Socket_GUI.put(True)
         self.q_ROS_Socket.put(socket_ros_data)
         
 
