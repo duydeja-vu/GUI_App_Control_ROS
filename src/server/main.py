@@ -14,6 +14,8 @@ import os
 import signal
 
 
+stated_ROS_node = False
+
 class MainProcessing(MainWindow, ServerSocket):
     def __init__(self):
         self.q_GUI_ROS = Queue()
@@ -28,9 +30,12 @@ class MainProcessing(MainWindow, ServerSocket):
         main_window.InitUI()
         sys.exit(app.exec_())
 
-    def StartROS(self):
-        rospy.init_node('main', anonymous=True)
-        vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+    def StartROSNode(self):
+        global stated_ROS_node
+        if stated_ROS_node == False:
+            rospy.init_node('main', anonymous=True)
+            vel_publisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+            stated_ROS_node = True
         pid_publisher = rospy.Publisher('/pid', String, queue_size=10)
         GUI_data = []
         data_pub = []
@@ -97,7 +102,7 @@ def main():
 
     p_1 = Process(target=main_process.StartGUI)
 
-    p_2 = Process(target=main_process.StartROS)
+    p_2 = Process(target=main_process.StartROSNode)
 
     p_3 = Process(target=main_process.StartSocket)
 
