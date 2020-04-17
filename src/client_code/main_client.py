@@ -14,7 +14,7 @@ class MainProcessing(MainWindow):
     
     def StartGUI(self):
         app = QApplication(sys.argv)
-        main_window = MainWindow(self.q_GUI_Socket, None)
+        main_window = MainWindow(q_GUI_Socket=self.q_GUI_Socket, is_client=True)
         main_window.InitUI()
         sys.exit(app.exec_())
 
@@ -23,6 +23,7 @@ class MainProcessing(MainWindow):
         SERVER_HOST = '127.0.0.1'
         SERVER_PORT = 15555
         client_socket.connect((SERVER_HOST, SERVER_PORT))
+        
 
 
 main_process = MainProcessing()
