@@ -81,32 +81,29 @@ class MainWindow(QMainWindow):
     def ConfirmButtonHandle(self):
         self.text_browser.clear()
         data = []
+        pid_data = []
+        pid_data.append(self.p_value.text())
+        pid_data.append(self.i_value.text())
+        pid_data.append(self.d_value.text())
+        pid_data.append(self.v_value.text())
+        pid_data.append(self.v_ref_value.text())
+        linear_data = self.linear_value.text().split(',')
+        angular_data = self.angular_value.text().split(',')
+        if len(linear_data) < 3:
+            for i in range(len(linear_data), 3):
+                linear_data.append(None)
+        if len(angular_data) < 3:
+            for i in range(len(angular_data), 3):
+                angular_data.append(None)
+        data.append(pid_data)
+        data.append(linear_data)
+        data.append(angular_data)
 
         if self.is_server == True:
             if self.q_Socket_GUI.qsize() != 0:
                 self.remote_control_mode = self.q_Socket_GUI.get()
 
             if self.remote_control_mode == False:
-                pid_data = []
-                pid_data.append(self.p_value.text())
-                pid_data.append(self.i_value.text())
-                pid_data.append(self.d_value.text())
-                pid_data.append(self.v_value.text())
-                pid_data.append(self.v_ref_value.text())
-                linear_data = self.linear_value.text().split(',')
-                angular_data = self.angular_value.text().split(',')
-
-                if len(linear_data) < 3:
-                    for i in range(len(linear_data), 3):
-                        linear_data.append(None)
-
-                if len(angular_data) < 3:
-                    for i in range(len(angular_data), 3):
-                        angular_data.append(None)
-
-                data.append(pid_data)
-                data.append(linear_data)
-                data.append(angular_data)
                 self.SetCommand(data)
                 self.q_GUI_ROS.put(data)
 
@@ -115,7 +112,8 @@ class MainWindow(QMainWindow):
                 
 
         if self.is_client == True:
-            self.SetCommand("Client")
+            self.q_GUI_Socket.put(data)
+            self.SetCommand("Client {}".format(data))
 
 
     def CmdVelButtonHandle(self):
